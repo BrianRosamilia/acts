@@ -34,9 +34,9 @@ namespace StargateAPI.Business.Commands
                 .SingleAsync(z => z.Name == request.Name, cancellationToken);
 
             var verifyNoPreviousDuty = await _context.AstronautDuties
-                .AnyAsync(z => z.PersonId == person.Id && 
-                               z.DutyTitle == request.DutyTitle && 
-                               z.DutyStartDate == request.DutyStartDate, 
+                .AnyAsync(z => z.PersonId == person.Id &&
+                               z.DutyTitle == request.DutyTitle &&
+                               z.DutyStartDate == request.DutyStartDate,
                            cancellationToken);
 
             if (verifyNoPreviousDuty)

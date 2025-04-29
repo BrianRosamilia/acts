@@ -59,7 +59,7 @@ namespace StargateAPI.Controllers
                     Success = false,
                     ResponseCode = (int)HttpStatusCode.InternalServerError
                 });
-            }            
+            }
         }
 
         [HttpPost("")]
@@ -68,13 +68,13 @@ namespace StargateAPI.Controllers
             try
             {
                 var result = await _mediator.Send(request);
-                
+
                 await _mediator.Send(new CreateLog
                 {
                     LogLevel = "Information",
                     Message = $"Successfully created astronaut duty for {request.Name}, Duty: {request.DutyTitle}, Rank: {request.Rank}"
                 });
-                
+
                 return this.GetResponse(result);
             }
             catch (BadHttpRequestException ex)
@@ -102,14 +102,14 @@ namespace StargateAPI.Controllers
                     Exception = ex.ToString(),
                     AdditionalData = System.Text.Json.JsonSerializer.Serialize(request)
                 });
-                
+
                 return this.GetResponse(new BaseResponse()
                 {
                     Message = ex.Message,
                     Success = false,
                     ResponseCode = (int)HttpStatusCode.InternalServerError
                 });
-            }           
+            }
         }
     }
 }

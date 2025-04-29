@@ -6,7 +6,7 @@ namespace StargateAPI.Business.Commands
 {
     public class CreateLog : IRequest<CreateLogResult>
     {
-        public string LogLevel { get; set;}
+        public string LogLevel { get; set; }
         public string Message { get; set; } = string.Empty;
         public string? Exception { get; set; }
         public string? AdditionalData { get; set; }

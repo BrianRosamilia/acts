@@ -45,7 +45,7 @@ namespace StargateAPI.Tests
         public async Task GetAstronautDutiesByName_ReturnsSuccessStatusCode()
         {
             await _httpClient.PostAsJsonAsync("/person", "Abigail");
-            
+
             var dutyRequest = new CreateAstronautDuty
             {
                 Name = "Abigail",
@@ -57,10 +57,10 @@ namespace StargateAPI.Tests
             var response = await _httpClient.GetAsync("/astronautduty/Abigail");
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-            
+
             mockCreateLogHandler.Verify(mock => mock.Handle(
                 It.Is<CreateLog>(log => log.LogLevel == "Information"),
-                It.IsAny<CancellationToken>()), 
+                It.IsAny<CancellationToken>()),
                 Times.AtLeastOnce());
         }
 
@@ -69,7 +69,7 @@ namespace StargateAPI.Tests
         {
             string personName = "Abigail";
             await _httpClient.PostAsJsonAsync("/person", personName);
-            
+
             var dutyRequest = new CreateAstronautDuty
             {
                 Name = personName,
@@ -95,7 +95,7 @@ namespace StargateAPI.Tests
         {
             string personName = "Abigail";
             await _httpClient.PostAsJsonAsync("/person", personName);
-            
+
             var dutyRequest = new CreateAstronautDuty
             {
                 Name = personName,
@@ -113,7 +113,7 @@ namespace StargateAPI.Tests
         }
 
         [TestMethod]
-        public async Task CreateAstronautDuty_WithNonExistentPerson_ReturnsError ()
+        public async Task CreateAstronautDuty_WithNonExistentPerson_ReturnsError()
         {
             var dutyRequest = new CreateAstronautDuty
             {
@@ -124,10 +124,10 @@ namespace StargateAPI.Tests
             var response = await _httpClient.PostAsJsonAsync("/astronautduty", dutyRequest);
 
             Assert.AreEqual(HttpStatusCode.InternalServerError, response.StatusCode);
-            
+
             mockCreateLogHandler.Verify(mock => mock.Handle(
                 It.Is<CreateLog>(log => log.LogLevel == "Error"),
-                It.IsAny<CancellationToken>()), 
+                It.IsAny<CancellationToken>()),
                 Times.Once());
         }
 
@@ -136,7 +136,7 @@ namespace StargateAPI.Tests
         {
             string personName = "Abigail";
             await _httpClient.PostAsJsonAsync("/person", personName);
-            
+
             var dutyRequest = new CreateAstronautDuty
             {
                 Name = personName,
@@ -144,9 +144,9 @@ namespace StargateAPI.Tests
                 Rank = "SG1"
             };
             await _httpClient.PostAsJsonAsync("/astronautduty", dutyRequest);
-            
+
             var duplicateResponse = await _httpClient.PostAsJsonAsync("/astronautduty", dutyRequest);
-            
+
             Assert.IsTrue(duplicateResponse.StatusCode == HttpStatusCode.BadRequest);
         }
     }

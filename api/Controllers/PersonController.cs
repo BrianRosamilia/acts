@@ -6,7 +6,7 @@ using System.Net;
 
 namespace StargateAPI.Controllers
 {
-   
+
     [ApiController]
     [Route("[controller]")]
     public class PersonController : ControllerBase
@@ -23,7 +23,7 @@ namespace StargateAPI.Controllers
             try
             {
                 var result = await _mediator.Send(new GetPeople());
-                
+
                 await _mediator.Send(new CreateLog
                 {
                     LogLevel = "Information",
@@ -40,7 +40,7 @@ namespace StargateAPI.Controllers
                     Message = "Error retrieving all people",
                     Exception = ex.ToString()
                 });
-                
+
                 return this.GetResponse(new BaseResponse()
                 {
                     Message = ex.Message,
@@ -62,7 +62,7 @@ namespace StargateAPI.Controllers
                         LogLevel = "Warning",
                         Message = "Attempted to get person with empty name"
                     });
-                    
+
                     return this.GetResponse(new BaseResponse()
                     {
                         Message = "Name cannot be empty",
@@ -70,12 +70,12 @@ namespace StargateAPI.Controllers
                         ResponseCode = (int)HttpStatusCode.BadRequest
                     });
                 }
-                
+
                 var result = await _mediator.Send(new GetPersonByName()
                 {
                     Name = name
                 });
-                
+
                 await _mediator.Send(new CreateLog
                 {
                     LogLevel = "Information",
@@ -92,7 +92,7 @@ namespace StargateAPI.Controllers
                     Message = $"Error retrieving person: {name}",
                     Exception = ex.ToString()
                 });
-                
+
                 return this.GetResponse(new BaseResponse()
                 {
                     Message = ex.Message,
@@ -114,7 +114,7 @@ namespace StargateAPI.Controllers
                         LogLevel = "Warning",
                         Message = "Attempted to create person with empty name"
                     });
-                    
+
                     return this.GetResponse(new BaseResponse()
                     {
                         Message = "Name cannot be empty",
@@ -122,12 +122,12 @@ namespace StargateAPI.Controllers
                         ResponseCode = (int)HttpStatusCode.BadRequest
                     });
                 }
-                
+
                 var result = await _mediator.Send(new CreatePerson()
                 {
                     Name = name
                 });
-                
+
                 await _mediator.Send(new CreateLog
                 {
                     LogLevel = "Information",
@@ -160,7 +160,7 @@ namespace StargateAPI.Controllers
                     Message = $"Error creating person: {name}",
                     Exception = ex.ToString()
                 });
-                
+
                 return this.GetResponse(new BaseResponse()
                 {
                     Message = ex.Message,

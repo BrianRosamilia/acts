@@ -16,13 +16,13 @@ namespace StargateAPI.Business.Queries
     {
         private readonly StargateContext _context;
         private readonly IMediator _mediator;
-        
+
         public GetPeopleHandler(StargateContext context, IMediator mediator)
         {
             _context = context;
             _mediator = mediator;
         }
-        
+
         public async Task<GetPeopleResult> Handle(GetPeople request, CancellationToken cancellationToken)
         {
             var result = new GetPeopleResult();
@@ -45,9 +45,9 @@ namespace StargateAPI.Business.Queries
 
                 result.People = peopleDto;
                 result.Success = true;
-                
+
                 int astronautCount = result.People.Count(p => p.CurrentDutyTitle != null);
-                
+
                 return result;
             }
             catch (Exception ex)
@@ -55,14 +55,14 @@ namespace StargateAPI.Business.Queries
                 result.Success = false;
                 result.Message = "An error occurred while retrieving people";
                 result.ResponseCode = (int)HttpStatusCode.InternalServerError;
-                
+
                 await _mediator.Send(new CreateLog
                 {
                     LogLevel = "Error",
                     Message = "Error retrieving all people",
                     Exception = ex.ToString()
                 }, cancellationToken);
-                
+
                 return result;
             }
         }

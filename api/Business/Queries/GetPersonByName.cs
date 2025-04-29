@@ -16,7 +16,7 @@ namespace StargateAPI.Business.Queries
     public class GetPersonByNameHandler : IRequestHandler<GetPersonByName, GetPersonByNameResult>
     {
         private readonly StargateContext _context;
-        
+
         public GetPersonByNameHandler(StargateContext context)
         {
             _context = context;
@@ -25,26 +25,26 @@ namespace StargateAPI.Business.Queries
         public async Task<GetPersonByNameResult> Handle(GetPersonByName request, CancellationToken cancellationToken)
         {
             var result = new GetPersonByNameResult();
-            
-                var person = await _context.People
-                    .Include(p => p.AstronautDetail)
-                    .SingleAsync(p => p.Name == request.Name, cancellationToken);
 
-                var personDto = new PersonAstronaut
-                {
-                    PersonId = person.Id,
-                    Name = person.Name,
-                    CurrentRank = person.AstronautDetail?.CurrentRank,
-                    CurrentDutyTitle = person.AstronautDetail?.CurrentDutyTitle,
-                    CareerStartDate = person.AstronautDetail?.CareerStartDate,
-                    CareerEndDate = person.AstronautDetail?.CareerEndDate
-                };
+            var person = await _context.People
+                .Include(p => p.AstronautDetail)
+                .SingleAsync(p => p.Name == request.Name, cancellationToken);
 
-                result.Person = personDto;
-                result.Success = true;
-                
-                return result;
-            
+            var personDto = new PersonAstronaut
+            {
+                PersonId = person.Id,
+                Name = person.Name,
+                CurrentRank = person.AstronautDetail?.CurrentRank,
+                CurrentDutyTitle = person.AstronautDetail?.CurrentDutyTitle,
+                CareerStartDate = person.AstronautDetail?.CareerStartDate,
+                CareerEndDate = person.AstronautDetail?.CareerEndDate
+            };
+
+            result.Person = personDto;
+            result.Success = true;
+
+            return result;
+
         }
     }
 
