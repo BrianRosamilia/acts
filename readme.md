@@ -1,8 +1,10 @@
 ## Running
 
-Run the project in Visual Studio.  This will NPM install, build the frontend, build the backend, and run the project.
+Run the project in Visual Studio.  This will NPM install, build the frontend, build the backend, and run the project (will take a while on first run)
 
 Test with `dotnet test` inside `api.Tests`
+
+UI is here `https://localhost:7204/index.html`
 
 If you run into issues getting the front end to because of the pre-build event that requires powershell, delete this from the project
 
