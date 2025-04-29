@@ -16,10 +16,18 @@ builder.Services.AddDbContext<StargateContext>(options =>
 builder.Services.AddMediatR(cfg =>
 {
     cfg.AddRequestPreProcessor<CreateAstronautDutyPreProcessor>();
+    cfg.AddRequestPreProcessor<CreatePersonPreProcessor>();
     cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly);
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<StargateContext>();
+    context.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -27,6 +35,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 
@@ -36,4 +46,4 @@ app.MapControllers();
 
 app.Run();
 
-
+public partial class Program { }

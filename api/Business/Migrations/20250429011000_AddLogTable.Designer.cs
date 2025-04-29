@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StargateAPI.Business.Data;
 
@@ -10,9 +11,11 @@ using StargateAPI.Business.Data;
 namespace StargateAPI.Migrations
 {
     [DbContext(typeof(StargateContext))]
-    partial class StargateContextModelSnapshot : ModelSnapshot
+    [Migration("20250429011000_AddLogTable")]
+    partial class AddLogTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -46,16 +49,6 @@ namespace StargateAPI.Migrations
                         .IsUnique();
 
                     b.ToTable("AstronautDetail");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CareerStartDate = new DateTime(2025, 4, 29, 19, 23, 13, 889, DateTimeKind.Local).AddTicks(8357),
-                            CurrentDutyTitle = "Commander",
-                            CurrentRank = "1LT",
-                            PersonId = 1
-                        });
                 });
 
             modelBuilder.Entity("StargateAPI.Business.Data.AstronautDuty", b =>
@@ -86,25 +79,6 @@ namespace StargateAPI.Migrations
                     b.HasIndex("PersonId");
 
                     b.ToTable("AstronautDuty");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DutyStartDate = new DateTime(2025, 4, 29, 19, 23, 13, 889, DateTimeKind.Local).AddTicks(8405),
-                            DutyTitle = "Commander",
-                            PersonId = 1,
-                            Rank = "1LT"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            DutyEndDate = new DateTime(2025, 3, 30, 19, 23, 13, 889, DateTimeKind.Local).AddTicks(8412),
-                            DutyStartDate = new DateTime(2020, 4, 29, 19, 23, 13, 889, DateTimeKind.Local).AddTicks(8408),
-                            DutyTitle = "Junior Commander",
-                            PersonId = 1,
-                            Rank = "0LT"
-                        });
                 });
 
             modelBuilder.Entity("StargateAPI.Business.Data.Log", b =>
@@ -151,18 +125,6 @@ namespace StargateAPI.Migrations
                         .IsUnique();
 
                     b.ToTable("Person");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "John Doe"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Jane Doe"
-                        });
                 });
 
             modelBuilder.Entity("StargateAPI.Business.Data.AstronautDetail", b =>

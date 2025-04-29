@@ -1,8 +1,10 @@
-﻿using Dapper;
-using MediatR;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
+using StargateAPI.Business.Commands;
 using StargateAPI.Business.Data;
 using StargateAPI.Business.Dtos;
 using StargateAPI.Controllers;
+using System.Net;
 
 namespace StargateAPI.Business.Queries
 {
@@ -14,6 +16,7 @@ namespace StargateAPI.Business.Queries
     public class GetPersonByNameHandler : IRequestHandler<GetPersonByName, GetPersonByNameResult>
     {
         private readonly StargateContext _context;
+        
         public GetPersonByNameHandler(StargateContext context)
         {
             _context = context;
@@ -22,14 +25,26 @@ namespace StargateAPI.Business.Queries
         public async Task<GetPersonByNameResult> Handle(GetPersonByName request, CancellationToken cancellationToken)
         {
             var result = new GetPersonByNameResult();
+            
+                var person = await _context.People
+                    .Include(p => p.AstronautDetail)
+                    .SingleAsync(p => p.Name == request.Name, cancellationToken);
 
-            var query = $"SELECT a.Id as PersonId, a.Name, b.CurrentRank, b.CurrentDutyTitle, b.CareerStartDate, b.CareerEndDate FROM [Person] a LEFT JOIN [AstronautDetail] b on b.PersonId = a.Id WHERE '{request.Name}' = a.Name";
+                var personDto = new PersonAstronaut
+                {
+                    PersonId = person.Id,
+                    Name = person.Name,
+                    CurrentRank = person.AstronautDetail?.CurrentRank,
+                    CurrentDutyTitle = person.AstronautDetail?.CurrentDutyTitle,
+                    CareerStartDate = person.AstronautDetail?.CareerStartDate,
+                    CareerEndDate = person.AstronautDetail?.CareerEndDate
+                };
 
-            var person = await _context.Connection.QueryAsync<PersonAstronaut>(query);
-
-            result.Person = person.FirstOrDefault();
-
-            return result;
+                result.Person = personDto;
+                result.Success = true;
+                
+                return result;
+            
         }
     }
 

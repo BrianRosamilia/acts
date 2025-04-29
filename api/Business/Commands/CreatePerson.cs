@@ -18,13 +18,11 @@ namespace StargateAPI.Business.Commands
         {
             _context = context;
         }
-        public Task Process(CreatePerson request, CancellationToken cancellationToken)
+        async public Task Process(CreatePerson request, CancellationToken cancellationToken)
         {
-            var person = _context.People.AsNoTracking().FirstOrDefault(z => z.Name == request.Name);
+            var person = await _context.People.AsNoTracking().FirstOrDefaultAsync(z => z.Name == request.Name);
 
             if (person is not null) throw new BadHttpRequestException("Bad Request");
-
-            return Task.CompletedTask;
         }
     }
 

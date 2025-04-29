@@ -1,5 +1,5 @@
-﻿using Dapper;
-using MediatR;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using StargateAPI.Business.Data;
 using StargateAPI.Business.Dtos;
 using StargateAPI.Controllers;
@@ -14,31 +14,53 @@ namespace StargateAPI.Business.Queries
     public class GetAstronautDutiesByNameHandler : IRequestHandler<GetAstronautDutiesByName, GetAstronautDutiesByNameResult>
     {
         private readonly StargateContext _context;
+        private readonly IMediator _mediator;
 
-        public GetAstronautDutiesByNameHandler(StargateContext context)
+        public GetAstronautDutiesByNameHandler(StargateContext context, IMediator mediator)
         {
             _context = context;
+            _mediator = mediator;
         }
 
         public async Task<GetAstronautDutiesByNameResult> Handle(GetAstronautDutiesByName request, CancellationToken cancellationToken)
         {
-
             var result = new GetAstronautDutiesByNameResult();
 
-            var query = $"SELECT a.Id as PersonId, a.Name, b.CurrentRank, b.CurrentDutyTitle, b.CareerStartDate, b.CareerEndDate FROM [Person] a LEFT JOIN [AstronautDetail] b on b.PersonId = a.Id WHERE \'{request.Name}\' = a.Name";
+            var person = await _context.People
+                .Include(p => p.AstronautDetail)
+                .FirstOrDefaultAsync(p => p.Name == request.Name, cancellationToken);
 
-            var person = await _context.Connection.QueryFirstOrDefaultAsync<PersonAstronaut>(query);
+            if (person == null)
+            {
+                throw new BadHttpRequestException("This person does not exist.");
+            }
 
-            result.Person = person;
+            if (person.AstronautDetail == null)
+            {
+                throw new BadHttpRequestException("This person is not an astronaut.");
+            }
 
-            query = $"SELECT * FROM [AstronautDuty] WHERE {person.PersonId} = PersonId Order By DutyStartDate Desc";
+            var personDto = new PersonAstronaut
+            {
+                PersonId = person.Id,
+                Name = person.Name,
+                CurrentRank = person.AstronautDetail.CurrentRank,
+                CurrentDutyTitle = person.AstronautDetail.CurrentDutyTitle,
+                CareerStartDate = person.AstronautDetail.CareerStartDate,
+                CareerEndDate = person.AstronautDetail.CareerEndDate
+            };
 
-            var duties = await _context.Connection.QueryAsync<AstronautDuty>(query);
+            result.Person = personDto;
 
-            result.AstronautDuties = duties.ToList();
+            var duties = await _context.AstronautDuties
+                .Where(ad => ad.PersonId == person.Id)
+                .OrderByDescending(ad => ad.DutyStartDate)
+                .ToListAsync(cancellationToken);
+
+            result.AstronautDuties = duties;
+            result.Success = true;
 
             return result;
-
         }
     }
 

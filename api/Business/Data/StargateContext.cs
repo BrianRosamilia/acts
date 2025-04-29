@@ -9,6 +9,7 @@ namespace StargateAPI.Business.Data
         public DbSet<Person> People { get; set; }
         public DbSet<AstronautDetail> AstronautDetails { get; set; }
         public DbSet<AstronautDuty> AstronautDuties { get; set; }
+        public DbSet<Log> Logs { get; set; }
 
         public StargateContext(DbContextOptions<StargateContext> options)
         : base(options)
@@ -19,7 +20,7 @@ namespace StargateAPI.Business.Data
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(StargateContext).Assembly);
 
-            //SeedData(modelBuilder);
+            SeedData(modelBuilder);
 
             base.OnModelCreating(modelBuilder);
         }
@@ -62,6 +63,15 @@ namespace StargateAPI.Business.Data
                         DutyStartDate = DateTime.Now,
                         DutyTitle = "Commander",
                         Rank = "1LT"
+                    },
+                    new AstronautDuty
+                    {
+                        Id = 2,
+                        PersonId = 1,
+                        DutyStartDate = DateTime.Now.AddYears(-5),
+                        DutyEndDate = DateTime.Now.AddDays(-30),
+                        DutyTitle = "Junior Commander",
+                        Rank = "0LT"
                     }
                 );
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace StargateAPI.Business.Data
 {
@@ -9,12 +10,12 @@ namespace StargateAPI.Business.Data
     {
         public int Id { get; set; }
 
+        [Required]
         public string Name { get; set; } = string.Empty;
 
         public virtual AstronautDetail? AstronautDetail { get; set; }
 
         public virtual ICollection<AstronautDuty> AstronautDuties { get; set; } = new HashSet<AstronautDuty>();
-
     }
 
     public class PersonConfiguration : IEntityTypeConfiguration<Person>
@@ -25,6 +26,9 @@ namespace StargateAPI.Business.Data
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
             builder.HasOne(z => z.AstronautDetail).WithOne(z => z.Person).HasForeignKey<AstronautDetail>(z => z.PersonId);
             builder.HasMany(z => z.AstronautDuties).WithOne(z => z.Person).HasForeignKey(z => z.PersonId);
+            
+            builder.HasIndex(x => x.Name).IsUnique();
+            builder.Property(x => x.Name).IsRequired();
         }
     }
 }
