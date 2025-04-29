@@ -12,7 +12,7 @@ If you run into issues getting the front end to because of the pre-build event t
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
       <Exec Command="powershell -Command &quot;Set-Location -Path '../client'; Write-Host 'Current directory:' (Get-Location).Path; npm install; npm run build&quot;" />
   </Target>
-``
+```
 
 And then `cd` to client and run `npm install` and `npm run build`
 
